@@ -7,19 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
   :root{
-    --ink:#12203A;
-    --ink-2:#25405F;
-    --paper:#F1F1EC;
-    --card:#FFFFFF;
-    --line:#D8D6CC;
-    --orange:#DD5E20;
-    --green:#2E7A4E;
-    --text:#182233;
-    --muted:#5B6472;
-    --danger:#B23A2E;
-    --radius:2px;
+    --ink:#12203A; --ink-2:#25405F; --paper:#F1F1EC; --card:#FFFFFF; --line:#D8D6CC;
+    --orange:#DD5E20; --green:#2E7A4E; --text:#182233; --muted:#5B6472; --danger:#B23A2E; --radius:2px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -43,7 +35,8 @@
   .grid{display:grid;gap:14px;}
   .grid.cols-2{grid-template-columns:1fr 1fr;}
   .grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
-  @media(max-width:720px){.grid.cols-2,.grid.cols-3{grid-template-columns:1fr;}}
+  .grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+  @media(max-width:720px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
 
   label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
   input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius);font-family:'IBM Plex Sans',sans-serif;font-size:14px;background:#fff;color:var(--text);}
@@ -61,15 +54,11 @@
   button.btn.danger{background:var(--danger);}
   button.btn:disabled{opacity:.5;cursor:not-allowed;}
 
-  table{width:100%;border-collapse:collapse;font-size:13.5px;}
-  th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
-  th{font-family:'Oswald',sans-serif;font-size:12px;text-transform:uppercase;color:var(--muted);letter-spacing:.03em;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+  th{font-family:'Oswald',sans-serif;font-size:11.5px;text-transform:uppercase;color:var(--muted);letter-spacing:.03em;}
   tr:hover td{background:#FAFAF7;}
-  .tag{display:inline-block;font-size:10.5px;font-family:'IBM Plex Mono',monospace;padding:2px 6px;border-radius:2px;}
-  .tag.cheaper{background:#E5F2E9;color:var(--green);}
-  .tag.markup{background:#F3ECE1;color:#8A5A22;}
 
-  /* Catálogo visual */
   .catcard{margin-bottom:26px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff;}
   .catcard .gallery{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px;background:#fff;padding:10px;}
   .catcard .gallery img{display:block;width:auto;height:320px;max-width:100%;object-fit:contain;margin:0 auto;}
@@ -78,7 +67,7 @@
   .catcard h3{font-size:16px;color:var(--ink-2);border-bottom:2px solid var(--ink-2);display:inline-block;padding-bottom:2px;margin-bottom:10px;}
 
   .total-box{background:var(--ink);color:#fff;padding:18px 20px;border-radius:var(--radius);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
-  .total-box .amount{font-family:'Oswald',sans-serif;font-size:30px;color:#fff;}
+  .total-box .amount{font-family:'Oswald',sans-serif;font-size:28px;color:#fff;}
   .total-box .label{font-size:12px;color:#B9C4D6;text-transform:uppercase;letter-spacing:.05em;}
   .breakdown{font-size:12.5px;color:var(--muted);margin-top:8px;}
   .breakdown div{display:flex;justify-content:space-between;padding:2px 0;}
@@ -100,7 +89,6 @@
   .credit a{color:#DD5E20;text-decoration:none;font-weight:600;}
   .credit a:hover{text-decoration:underline;}
 
-  /* carrito de la cotización */
   .cart-item{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;background:#FAFAF8;}
   .cart-item .row1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
   .cart-item .name{font-weight:600;}
@@ -108,13 +96,19 @@
   .cart-item .actions{display:flex;gap:6px;flex-shrink:0;}
   .cart-empty{color:var(--muted);font-size:13.5px;padding:10px 0;}
   .stepbadge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;margin-right:8px;}
+
+  .logo-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border:1px solid var(--line);border-radius:2px;padding:10px;margin-bottom:8px;background:#fff;}
+  .logo-row .logo-row-title{grid-column:1 / -1;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;}
+  @media(max-width:600px){.logo-row{grid-template-columns:1fr;}}
+
+  .lista-badge{display:inline-block;background:var(--ink-2);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border-radius:2px;margin-left:8px;}
 </style>
 </head>
 <body>
 
 <script>
   // Pegar acá la URL del Web App de Apps Script una vez desplegado (ver SETUP.md).
-  const API_URL = "https://script.google.com/macros/s/AKfycbyWXuwbdU2EXqJP7jryJV0bUw9bLYiWfMJNuAD6upUdZ0Ef9zPiu2QuHI6Muzz5-ANSEw/exec"; // ej: "https://script.google.com/macros/s/AKfycb.../exec"
+  const API_URL = "https://script.google.com/macros/s/AKfycbyEg6Wvb4XvJLM6um71p85RKaYS99ps8xPQredQuKWNHo-9JG2aw2V27z-036WD9F0nfg/exec"; // ej: "https://script.google.com/macros/s/AKfycb.../exec"
 </script>
 
 <div id="apiwarn" class="apiwarn" style="display:none;">
@@ -141,33 +135,65 @@
           <h2>Lista de precios vigente</h2>
           <p style="color:var(--muted);font-size:13px;margin:2px 0 0;">Precios sin IVA.</p>
         </div>
-        <button class="btn ghost" id="btn-download-catalog">Descargar catálogo en PDF (sin precios)</button>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="field" style="min-width:200px;">
+            <label>Lista a mostrar</label>
+            <select id="cat-lista-select"></select>
+          </div>
+          <button class="btn ghost" id="btn-download-catalog">Descargar catálogo en PDF (sin precios)</button>
+        </div>
       </div>
       <div id="catalog-pdf-msg"></div>
     </div>
     <div id="catalogo-cats"></div>
     <div class="panel">
-      <h2>Personalización</h2>
-      <div class="catcard" style="border:none;">
-        <div class="gallery"><img src="images/personalizacion.jpg" alt="Técnicas de personalización HEMA"></div>
-      </div>
-      <table><thead><tr><th>Concepto</th><th>Precio</th></tr></thead><tbody id="tabla-personalizacion"></tbody></table>
+      <h2>Adicionales</h2>
+      <table><thead><tr><th>Concepto</th><th>Valor</th></tr></thead><tbody id="tabla-adicionales"></tbody></table>
     </div>
   </section>
 
   <!-- ================= COTIZADOR ================= -->
   <section id="view-cotizador" class="view">
     <div class="panel">
-      <h2><span class="stepbadge">1</span>Vendedor y cliente</h2>
+      <h2><span class="stepbadge">1</span>Lista de precios</h2>
+      <div class="grid cols-2">
+        <div class="field">
+          <label>Vender contra la lista de</label>
+          <select id="q-lista"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="stepbadge">2</span>Vendedor y cliente</h2>
       <div class="grid cols-2">
         <div class="field"><label>Vendedor</label><input id="q-vendedor"></div>
         <div class="field"><label>Email del vendedor (recibe el PDF)</label><input type="email" id="q-email"></div>
       </div>
-      <div class="field"><label>Cliente / Empresa</label><input id="q-cliente"></div>
+      <div class="grid cols-2">
+        <div class="field">
+          <label>Cliente / Empresa</label>
+          <input id="q-cliente" list="clientes-datalist" autocomplete="off">
+          <datalist id="clientes-datalist"></datalist>
+        </div>
+        <div class="field"><label>CUIT</label><input id="q-cuit"></div>
+      </div>
+      <div class="grid cols-3">
+        <div class="field"><label>Nombre de contacto</label><input id="q-contacto"></div>
+        <div class="field"><label>Teléfono</label><input id="q-telefono"></div>
+        <div class="field"><label>Email del cliente</label><input type="email" id="q-cliente-email"></div>
+      </div>
+      <div class="field">
+        <label>Condición fiscal</label>
+        <select id="q-condicion-fiscal">
+          <option value="Responsable Inscripto">Responsable Inscripto (precios netos + IVA discriminado)</option>
+          <option value="Consumidor Final">Consumidor Final (precios con IVA incluido)</option>
+        </select>
+      </div>
     </div>
 
     <div class="panel">
-      <h2><span class="stepbadge">2</span>Agregar producto al presupuesto</h2>
+      <h2><span class="stepbadge">3</span>Agregar producto al presupuesto</h2>
       <div id="item-msg"></div>
       <div class="grid cols-2">
         <div class="field"><label>Producto</label><select id="i-producto"></select></div>
@@ -176,53 +202,52 @@
       <div class="grid cols-3">
         <div class="field"><label>Talles</label><input id="i-talles" placeholder="Ej: M:2, L:4, XL:2"></div>
         <div class="field"><label>Color</label><input id="i-color"></div>
-        <div class="field"><label>Tela / Material</label><input id="i-tela"></div>
+        <div class="field"><label>Modelo o referencia</label><input id="i-modelo"></div>
       </div>
-      <div class="field"><label>Modelo o referencia</label><input id="i-modelo"></div>
 
       <fieldset>
         <legend>Personalización</legend>
         <div class="checkrow"><input type="checkbox" id="i-lleva-logo"><label style="margin:0;">Lleva logo</label></div>
-        <div class="grid cols-3">
-          <div class="field"><label>Cantidad de logos</label><input type="number" min="0" value="0" id="i-cant-logos"></div>
-          <div class="field"><label>Técnica</label><select id="i-tecnica"></select></div>
-          <div class="field"><label>Ubicación</label>
-            <select id="i-ubicacion"><option>Frente</option><option>Espalda</option><option>Manga</option><option>Otro</option></select>
-          </div>
+        <div class="field" id="i-cant-logos-wrap" style="display:none;max-width:220px;">
+          <label>Cantidad de logos</label>
+          <input type="number" min="1" value="1" id="i-cant-logos">
         </div>
-        <div class="grid cols-2">
-          <div class="field"><label>Medida aproximada del logo</label><input id="i-medida-logo" placeholder="Ej: 8x8 cm"></div>
-          <div class="field"><label>Adjuntar imagen del logo</label><input type="file" id="i-logo-file" accept="image/*"></div>
-        </div>
+        <div id="i-logos-detalle" style="display:none;"></div>
+        <div class="field"><label>Adjuntar imagen del logo (opcional)</label><input type="file" id="i-logo-file" accept="image/*"></div>
       </fieldset>
 
-      <fieldset>
-        <legend>Detalles de confección (cada uno suma % al valor de este producto)</legend>
-        <div id="i-modificadores" class="grid cols-2"></div>
-        <div class="field"><label>Otras especificaciones de este producto</label><textarea id="i-detalles" placeholder="Cierres, bolsillos, combinaciones de color, etc."></textarea></div>
-      </fieldset>
+      <div class="field"><label>Observaciones de este producto</label><textarea id="i-detalles" placeholder="Cualquier especificación puntual de esta prenda."></textarea></div>
 
       <div class="total-box" style="background:var(--ink-2);">
-        <div><div class="label">Subtotal de este producto</div><div class="amount" id="i-subtotal">$0</div></div>
+        <div>
+          <div class="label">Este producto</div>
+          <div class="amount" id="i-subtotal">$0</div>
+          <div style="font-size:11.5px;color:#C7CFDC;margin-top:2px;">Unitario: <span id="i-unitario">$0</span></div>
+        </div>
         <div style="display:flex;gap:10px;">
-          <button type="button" class="btn ghost" style="background:#fff;" id="btn-cancel-edit" style="display:none;">Cancelar edición</button>
+          <button type="button" class="btn ghost" style="background:#fff;display:none;" id="btn-cancel-edit">Cancelar edición</button>
           <button type="button" class="btn orange" id="btn-add-item">Agregar al presupuesto</button>
         </div>
       </div>
     </div>
 
     <div class="panel">
-      <h2><span class="stepbadge">3</span>Productos del presupuesto</h2>
+      <h2><span class="stepbadge">4</span>Productos del presupuesto</h2>
       <div id="cart-list"><p class="cart-empty">Todavía no agregaste ningún producto.</p></div>
     </div>
 
     <div class="panel">
-      <h2><span class="stepbadge">4</span>Entrega y condiciones</h2>
-      <div class="grid cols-2">
+      <h2><span class="stepbadge">5</span>Entrega y condiciones</h2>
+      <div class="grid cols-3">
         <div class="field"><label>Fecha para la que lo necesita</label><input type="date" id="q-fecha"></div>
-        <div class="field"><label>Condiciones de pago</label><input id="q-pago" placeholder="Ej: 50% anticipo / 50% contra entrega"></div>
+        <div class="field"><label>Validez de la oferta</label><input id="q-validez" placeholder="Ej: 7 días" value="7 días"></div>
+        <div class="field"><label>Plazo de entrega</label><input id="q-plazo" placeholder="Ej: 15 días"></div>
       </div>
-      <div class="field"><label>Observaciones / requisitos especiales</label><textarea id="q-obs"></textarea></div>
+      <div class="grid cols-2">
+        <div class="field"><label>Forma de pago</label><input id="q-pago" placeholder="Ej: 50% anticipo / 50% contra entrega"></div>
+        <div class="field"><label>Lugar de entrega</label><input id="q-lugar-entrega" placeholder="Ej: Avenida Ignacio de la Rosa 1430, Capital, San Juan"></div>
+      </div>
+      <div class="field"><label>Observaciones generales</label><textarea id="q-obs"></textarea></div>
     </div>
 
     <div id="quote-msg"></div>
@@ -249,27 +274,33 @@
     <div id="admin-panel" style="display:none;">
       <div class="panel">
         <h2>Ajuste global de precios</h2>
-        <p style="color:var(--muted);font-size:13px;">Aplica un % a todos los productos de una sola vez. Usar negativo para bajar precios.</p>
+        <p style="color:var(--muted);font-size:13px;">Aplica un % a todos los productos de una lista (o a las 4) de una sola vez. Negativo para bajar precios.</p>
         <div class="grid cols-3">
           <div class="field"><label>Porcentaje (ej: 5 ó -3)</label><input type="number" id="admin-global-pct" step="0.1"></div>
-          <div class="field" style="align-self:end;"><button class="btn" id="btn-global-update">Aplicar a todos los productos</button></div>
+          <div class="field"><label>Lista a ajustar</label>
+            <select id="admin-global-lista">
+              <option value="Todas">Todas las listas</option>
+              <option value="SanLuis">San Luis</option>
+              <option value="SanJuan">San Juan</option>
+              <option value="BsAs">Buenos Aires</option>
+              <option value="SanLuisMinorista">San Luis Minorista</option>
+            </select>
+          </div>
+          <div class="field" style="align-self:end;"><button class="btn" id="btn-global-update">Aplicar</button></div>
         </div>
         <div id="admin-global-msg"></div>
       </div>
 
       <div class="panel">
-        <h2>Precios por producto</h2>
-        <table><thead><tr><th>Producto</th><th>Base</th><th>Competencia</th><th>Final</th><th>Comentario</th><th></th></tr></thead><tbody id="admin-productos"></tbody></table>
+        <h2>Precios por producto y por lista</h2>
+        <div style="overflow-x:auto;">
+        <table><thead><tr><th>Producto</th><th>San Luis</th><th>San Juan</th><th>Bs. As.</th><th>SL Minorista</th><th></th></tr></thead><tbody id="admin-productos"></tbody></table>
+        </div>
       </div>
 
       <div class="panel">
-        <h2>Personalización</h2>
-        <table><thead><tr><th>Concepto</th><th>Precio</th><th></th></tr></thead><tbody id="admin-personalizacion"></tbody></table>
-      </div>
-
-      <div class="panel">
-        <h2>Modificadores por detalle de confección</h2>
-        <table><thead><tr><th>Ítem</th><th>%</th><th></th></tr></thead><tbody id="admin-modificadores"></tbody></table>
+        <h2>Adicionales</h2>
+        <table><thead><tr><th>Concepto</th><th>Tipo</th><th>Valor</th><th></th></tr></thead><tbody id="admin-adicionales"></tbody></table>
       </div>
     </div>
   </section>
@@ -283,19 +314,6 @@
 /* ============================================================
    IMÁGENES DE CATEGORÍA (extraídas del catálogo HEMA)
    ============================================================ */
-// Agrupación para el PDF del catálogo (evita repetir la misma foto en dos páginas
-// cuando dos categorías de precios comparten la misma imagen de catálogo).
-const CATALOG_PDF_GROUPS = [
-  { title: "Remeras y Chombas", categorias: ["Remeras","Chombas"], imagen: "images/remera_chomba.jpg" },
-  { title: "Camisas de Trabajo", categorias: ["Camisas"], imagen: "images/camisa.jpg" },
-  { title: "Pantalones de Trabajo", categorias: ["Pantalones"], imagen: "images/pantalon.jpg" },
-  { title: "Buzos y Sweaters", categorias: ["Buzos y sweaters"], imagen: "images/buzo_cuello_redondo.jpg" },
-  { title: "Camperas y Chalecos", categorias: ["Camperas y chalecos"], imagen: "images/campera_softshell.jpg" },
-  { title: "Línea Hospitalaria", categorias: ["Hospitalaria"], imagen: "images/linea_hospitalaria.jpg" },
-  { title: "Calzado de Seguridad", categorias: ["Calzado"], imagen: "images/calzado.jpg" },
-  { title: "Personalización", categorias: [], imagen: "images/personalizacion.jpg" }
-];
-
 const CATEGORY_IMAGES = {
   "Remeras": ["images/remera_chomba.jpg"],
   "Chombas": ["images/remera_chomba.jpg"],
@@ -307,70 +325,104 @@ const CATEGORY_IMAGES = {
   "Calzado": ["images/calzado.jpg"]
 };
 
+const CATALOG_PDF_GROUPS = [
+  { title: "Remeras y Chombas", categorias: ["Remeras","Chombas"], imagen: "images/remera_chomba.jpg" },
+  { title: "Camisas de Trabajo", categorias: ["Camisas"], imagen: "images/camisa.jpg" },
+  { title: "Pantalones de Trabajo", categorias: ["Pantalones"], imagen: "images/pantalon.jpg" },
+  { title: "Buzos y Sweaters", categorias: ["Buzos y sweaters"], imagen: "images/buzo_cuello_redondo.jpg" },
+  { title: "Camperas y Chalecos", categorias: ["Camperas y chalecos"], imagen: "images/campera_softshell.jpg" },
+  { title: "Línea Hospitalaria", categorias: ["Hospitalaria"], imagen: "images/linea_hospitalaria.jpg" },
+  { title: "Calzado de Seguridad", categorias: ["Calzado"], imagen: "images/calzado.jpg" }
+];
+
+const LISTAS = [
+  { id: "SanLuis", label: "San Luis (Mayorista)" },
+  { id: "SanJuan", label: "San Juan" },
+  { id: "BsAs", label: "Buenos Aires" },
+  { id: "SanLuisMinorista", label: "San Luis Minorista" }
+];
+
 /* ============================================================
    DATOS DE RESPALDO (modo demo, sin backend conectado)
    ============================================================ */
 const FALLBACK_DATA = {
   productos: [
-    {ID:"P01",Categoria:"Remeras",Producto:"Remera manga corta",PrecioBase:9800,PrecioCompetencia:"",PrecioFinal:11760,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P02",Categoria:"Remeras",Producto:"Remera manga larga",PrecioBase:11230,PrecioCompetencia:"",PrecioFinal:13476,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P03",Categoria:"Chombas",Producto:"Chomba piqué manga corta",PrecioBase:18700,PrecioCompetencia:19481,PrecioFinal:17533,Comentario:"Competencia cotiza $19.481. 10% por debajo de competencia."},
-    {ID:"P04",Categoria:"Chombas",Producto:"Chomba piqué manga larga",PrecioBase:19800,PrecioCompetencia:"",PrecioFinal:23760,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P05",Categoria:"Camisas",Producto:"Camisa batista manga corta",PrecioBase:23100,PrecioCompetencia:"",PrecioFinal:27720,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P06",Categoria:"Camisas",Producto:"Camisa batista manga larga",PrecioBase:25880,PrecioCompetencia:"",PrecioFinal:31056,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P07",Categoria:"Camisas",Producto:"Camisa gabardina manga corta",PrecioBase:25190,PrecioCompetencia:"",PrecioFinal:30228,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P08",Categoria:"Camisas",Producto:"Camisa gabardina manga larga",PrecioBase:28600,PrecioCompetencia:"",PrecioFinal:34320,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P09",Categoria:"Pantalones",Producto:"Pantalón de trabajo gabardina",PrecioBase:21800,PrecioCompetencia:"",PrecioFinal:26160,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P10",Categoria:"Pantalones",Producto:"Pantalón cargo gabardina",PrecioBase:28200,PrecioCompetencia:55055,PrecioFinal:49550,Comentario:"Competencia cotiza cargo reforzado $55.055. 10% por debajo de competencia."},
-    {ID:"P11",Categoria:"Pantalones",Producto:"Pantalón de trabajo ripstop",PrecioBase:26600,PrecioCompetencia:"",PrecioFinal:31920,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P12",Categoria:"Pantalones",Producto:"Pantalón cargo ripstop",PrecioBase:32340,PrecioCompetencia:"",PrecioFinal:38808,Comentario:"Sin cotización de competencia relevada para esta variante. +20% sobre base."},
-    {ID:"P13",Categoria:"Buzos y sweaters",Producto:"Buzo cuello redondo",PrecioBase:22200,PrecioCompetencia:"",PrecioFinal:26640,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P14",Categoria:"Buzos y sweaters",Producto:"Buzo polar",PrecioBase:23990,PrecioCompetencia:"",PrecioFinal:28788,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P15",Categoria:"Buzos y sweaters",Producto:"Buzo canguro",PrecioBase:24300,PrecioCompetencia:"",PrecioFinal:29160,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P16",Categoria:"Camperas y chalecos",Producto:"Campera polar",PrecioBase:26830,PrecioCompetencia:41140,PrecioFinal:37026,Comentario:"Competencia cotiza campera manta polar $41.140. 10% por debajo de competencia."},
-    {ID:"P17",Categoria:"Buzos y sweaters",Producto:"Sweater",PrecioBase:30400,PrecioCompetencia:"",PrecioFinal:36480,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P18",Categoria:"Camperas y chalecos",Producto:"Chaleco polar",PrecioBase:22650,PrecioCompetencia:"",PrecioFinal:27180,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P19",Categoria:"Camperas y chalecos",Producto:"Chaleco tracker",PrecioBase:27620,PrecioCompetencia:"",PrecioFinal:33144,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P20",Categoria:"Camperas y chalecos",Producto:"Chaleco softshell",PrecioBase:33500,PrecioCompetencia:"",PrecioFinal:40200,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P21",Categoria:"Camperas y chalecos",Producto:"Campera softshell modelo 1 (con capucha)",PrecioBase:45000,PrecioCompetencia:"",PrecioFinal:54000,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P22",Categoria:"Camperas y chalecos",Producto:"Campera softshell modelo 2 (sin capucha)",PrecioBase:39190,PrecioCompetencia:"",PrecioFinal:47028,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P23",Categoria:"Camperas y chalecos",Producto:"Campera de tracker",PrecioBase:43200,PrecioCompetencia:"",PrecioFinal:51840,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P24",Categoria:"Hospitalaria",Producto:"Ambo Arciel hasta 2XL",PrecioBase:43500,PrecioCompetencia:"",PrecioFinal:52200,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P25",Categoria:"Hospitalaria",Producto:"Ambo Arciel talle especial",PrecioBase:48600,PrecioCompetencia:"",PrecioFinal:58320,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P26",Categoria:"Calzado",Producto:"Botín de seguridad Micfer",PrecioBase:42560,PrecioCompetencia:"",PrecioFinal:51072,Comentario:"Sin cotización de competencia relevada. +20% sobre base."},
-    {ID:"P27",Categoria:"Calzado",Producto:"Botín de seguridad 1460",PrecioBase:58340,PrecioCompetencia:"",PrecioFinal:70008,Comentario:"Sin cotización de competencia relevada. +20% sobre base."}
+    {ID:"P01",Categoria:"Remeras",Producto:"Remera manga corta"},
+    {ID:"P02",Categoria:"Remeras",Producto:"Remera manga larga"},
+    {ID:"P03",Categoria:"Chombas",Producto:"Chomba piqué manga corta"},
+    {ID:"P04",Categoria:"Chombas",Producto:"Chomba piqué manga larga"},
+    {ID:"P05",Categoria:"Camisas",Producto:"Camisa batista manga corta"},
+    {ID:"P06",Categoria:"Camisas",Producto:"Camisa batista manga larga"},
+    {ID:"P07",Categoria:"Camisas",Producto:"Camisa gabardina manga corta"},
+    {ID:"P08",Categoria:"Camisas",Producto:"Camisa gabardina manga larga"},
+    {ID:"P09",Categoria:"Pantalones",Producto:"Pantalón de trabajo gabardina"},
+    {ID:"P10",Categoria:"Pantalones",Producto:"Pantalón cargo gabardina"},
+    {ID:"P11",Categoria:"Pantalones",Producto:"Pantalón de trabajo ripstop"},
+    {ID:"P12",Categoria:"Pantalones",Producto:"Pantalón cargo ripstop"},
+    {ID:"P13",Categoria:"Buzos y sweaters",Producto:"Buzo cuello redondo"},
+    {ID:"P14",Categoria:"Buzos y sweaters",Producto:"Buzo polar"},
+    {ID:"P15",Categoria:"Buzos y sweaters",Producto:"Buzo canguro"},
+    {ID:"P16",Categoria:"Camperas y chalecos",Producto:"Campera polar"},
+    {ID:"P17",Categoria:"Buzos y sweaters",Producto:"Sweater"},
+    {ID:"P18",Categoria:"Camperas y chalecos",Producto:"Chaleco polar"},
+    {ID:"P19",Categoria:"Camperas y chalecos",Producto:"Chaleco tracker"},
+    {ID:"P20",Categoria:"Camperas y chalecos",Producto:"Chaleco softshell"},
+    {ID:"P21",Categoria:"Camperas y chalecos",Producto:"Campera softshell modelo 1 (con capucha)"},
+    {ID:"P22",Categoria:"Camperas y chalecos",Producto:"Campera softshell modelo 2 (sin capucha)"},
+    {ID:"P23",Categoria:"Camperas y chalecos",Producto:"Campera de tracker"},
+    {ID:"P24",Categoria:"Hospitalaria",Producto:"Ambo Arciel hasta 2XL"},
+    {ID:"P25",Categoria:"Hospitalaria",Producto:"Ambo Arciel talle especial"},
+    {ID:"P26",Categoria:"Calzado",Producto:"Botín de seguridad Micfer"},
+    {ID:"P27",Categoria:"Calzado",Producto:"Botín de seguridad 1460"}
   ],
-  personalizacion: [
-    {ID:"PZ01",Concepto:"DTF chico",Precio:500},
-    {ID:"PZ02",Concepto:"Reflectivo 2.5 cm",Precio:1000},
-    {ID:"PZ03",Concepto:"Bordado chico",Precio:1250},
-    {ID:"PZ04",Concepto:"DTF grande (espalda)",Precio:1500},
-    {ID:"PZ05",Concepto:"Reflectivo 5 cm",Precio:2000},
-    {ID:"PZ06",Concepto:"Bordado grande",Precio:2700},
-    {ID:"PZ07",Concepto:"DTF grande 40x40 cm",Precio:3600}
+  listaPrecios: [
+    {ID:"P01",Producto:"Remera manga corta",SanLuis:10400,SanJuan:11760,BsAs:9600,SanLuisMinorista:16446.28},
+    {ID:"P02",Producto:"Remera manga larga",SanLuis:14300,SanJuan:13476,BsAs:13300,SanLuisMinorista:13476},
+    {ID:"P03",Producto:"Chomba piqué manga corta",SanLuis:20900,SanJuan:22440,BsAs:19000,SanLuisMinorista:24710.74},
+    {ID:"P04",Producto:"Chomba piqué manga larga",SanLuis:22100,SanJuan:23760,BsAs:20100,SanLuisMinorista:23760},
+    {ID:"P05",Producto:"Camisa batista manga corta",SanLuis:25300,SanJuan:27720,BsAs:23400,SanLuisMinorista:33801.65},
+    {ID:"P06",Producto:"Camisa batista manga larga",SanLuis:28300,SanJuan:31056,BsAs:26200,SanLuisMinorista:33801.65},
+    {ID:"P07",Producto:"Camisa gabardina manga corta",SanLuis:28800,SanJuan:30228,BsAs:26600,SanLuisMinorista:33801.65},
+    {ID:"P08",Producto:"Camisa gabardina manga larga",SanLuis:32700,SanJuan:34320,BsAs:30300,SanLuisMinorista:33801.65},
+    {ID:"P09",Producto:"Pantalón de trabajo gabardina",SanLuis:22900,SanJuan:26160,BsAs:21300,SanLuisMinorista:40413.22},
+    {ID:"P10",Producto:"Pantalón cargo gabardina",SanLuis:29500,SanJuan:49550,BsAs:28300,SanLuisMinorista:40413.22},
+    {ID:"P11",Producto:"Pantalón de trabajo ripstop",SanLuis:23300,SanJuan:31920,BsAs:21700,SanLuisMinorista:40413.22},
+    {ID:"P12",Producto:"Pantalón cargo ripstop",SanLuis:30000,SanJuan:38808,BsAs:28900,SanLuisMinorista:40413.22},
+    {ID:"P13",Producto:"Buzo cuello redondo",SanLuis:29700,SanJuan:26640,BsAs:27500,SanLuisMinorista:28842.98},
+    {ID:"P14",Producto:"Buzo polar",SanLuis:26400,SanJuan:28788,BsAs:23100,SanLuisMinorista:28788},
+    {ID:"P15",Producto:"Buzo canguro",SanLuis:33300,SanJuan:29160,BsAs:30800,SanLuisMinorista:29160},
+    {ID:"P16",Producto:"Campera polar",SanLuis:29600,SanJuan:37026,BsAs:25800,SanLuisMinorista:37026},
+    {ID:"P17",Producto:"Sweater",SanLuis:36480,SanJuan:36480,BsAs:36480,SanLuisMinorista:36480},
+    {ID:"P18",Producto:"Chaleco polar",SanLuis:24400,SanJuan:27180,BsAs:18700,SanLuisMinorista:27180},
+    {ID:"P19",Producto:"Chaleco tracker",SanLuis:25600,SanJuan:33144,BsAs:22400,SanLuisMinorista:33144},
+    {ID:"P20",Producto:"Chaleco softshell",SanLuis:30200,SanJuan:40200,BsAs:28000,SanLuisMinorista:53719.01},
+    {ID:"P21",Producto:"Campera softshell modelo 1 (con capucha)",SanLuis:49700,SanJuan:54000,BsAs:46000,SanLuisMinorista:53719.01},
+    {ID:"P22",Producto:"Campera softshell modelo 2 (sin capucha)",SanLuis:38500,SanJuan:47028,BsAs:35700,SanLuisMinorista:53719.01},
+    {ID:"P23",Producto:"Campera de tracker",SanLuis:39900,SanJuan:51840,BsAs:36960.25,SanLuisMinorista:90082.64},
+    {ID:"P24",Producto:"Ambo Arciel hasta 2XL",SanLuis:49900,SanJuan:52200,BsAs:41000,SanLuisMinorista:61983.47},
+    {ID:"P25",Producto:"Ambo Arciel talle especial",SanLuis:55500,SanJuan:58320,BsAs:45200,SanLuisMinorista:58320},
+    {ID:"P26",Producto:"Botín de seguridad Micfer",SanLuis:51000,SanJuan:51072,BsAs:46600,SanLuisMinorista:53636.36},
+    {ID:"P27",Producto:"Botín de seguridad 1460",SanLuis:68900,SanJuan:70008,BsAs:62900,SanLuisMinorista:74297.52}
   ],
-  modificadores: [
-    {ID:"M01",Item:"Reflectivo aplicado en tela",Porcentaje:5},
-    {ID:"M02",Item:"Capucha",Porcentaje:5},
-    {ID:"M03",Item:"Bolsillos adicionales",Porcentaje:3},
-    {ID:"M04",Item:"Combinación de colores (bicolor)",Porcentaje:5},
-    {ID:"M05",Item:"Cierres especiales",Porcentaje:4},
-    {ID:"M06",Item:"Puños ajustables",Porcentaje:3},
-    {ID:"M07",Item:"Urgencia (entrega menor a 15 días)",Porcentaje:15},
-    {ID:"M08",Item:"Pago en cuotas",Porcentaje:8}
+  adicionales: [
+    {ID:"AD01",Concepto:"Bordado",Tipo:"Monto",Valor:2500},
+    {ID:"AD02",Concepto:"Reflectivo aplicado en tela",Tipo:"Porcentaje",Valor:5},
+    {ID:"AD03",Concepto:"Estampado en DTF",Tipo:"Monto",Valor:1500}
   ],
   direcciones: [
     {ID:"D01",Sede:"Buenos Aires",Contacto:"Alejandro Fernández",Telefono:"11-6942-7123",Direccion:"Balcarce 664, Lomas de Zamora"},
     {ID:"D02",Sede:"Buenos Aires",Contacto:"Patricia Fernández",Telefono:"11-6193-6627",Direccion:"Balcarce 664, Lomas de Zamora"},
     {ID:"D03",Sede:"San Luis",Contacto:"Beatriz Bóveda",Telefono:"11-6565-0801",Direccion:"Juan Gilberto Funes 829, San Luis"},
-    {ID:"D04",Sede:"San Juan",Contacto:"Asesora comercial",Telefono:"",Direccion:"Ignacio De La Rosa 2630 Oeste - Capital, San Juan"}
-  ]
+    {ID:"D04",Sede:"San Juan",Contacto:"Asesora comercial",Telefono:"2664 68-8533",Direccion:"Ignacio De La Rosa 2630 Oeste - Capital, San Juan"}
+  ],
+  clientes: [],
+  configuracion: { IVA: 21 }
 };
 
 let DATA = null;
 let ADMIN_PASS = null;
-let CART = [];          // productos agregados al presupuesto actual
-let EDITING_INDEX = -1; // índice del ítem del carrito que se está editando (-1 = ninguno)
+let CART = [];
+let EDITING_INDEX = -1;
 
 async function loadData(){
   if(!API_URL){
@@ -390,6 +442,15 @@ async function loadData(){
 }
 
 function money(n){ n = Number(n)||0; return '$' + n.toLocaleString('es-AR',{maximumFractionDigits:0}); }
+function getIvaRate(){ return Number((DATA.configuracion && DATA.configuracion.IVA) || 21); }
+
+function getPrecioLista(productId, lista){
+  const row = DATA.listaPrecios.find(p=>p.ID===productId);
+  if(!row) return 0;
+  let v = Number(row[lista]);
+  if(!v){ v = Number(row['SanJuan']) || 0; } // fallback si esa lista no tiene valor cargado
+  return v;
+}
 
 document.querySelectorAll('nav.tabs button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
@@ -403,7 +464,14 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
 /* ============================================================
    CATALOGO VISUAL
    ============================================================ */
+function populateListaSelectors(){
+  const opts = LISTAS.map(l=>`<option value="${l.id}">${l.label}</option>`).join('');
+  document.getElementById('cat-lista-select').innerHTML = opts;
+  document.getElementById('q-lista').innerHTML = opts;
+}
+
 function renderCatalogo(){
+  const lista = document.getElementById('cat-lista-select').value || 'SanJuan';
   const wrap = document.getElementById('catalogo-cats');
   wrap.innerHTML = '';
   const cats = {};
@@ -414,15 +482,510 @@ function renderCatalogo(){
     const imgs = CATEGORY_IMAGES[cat] || [];
     const gallery = imgs.length ? `<div class="gallery">${imgs.map(src=>`<img src="${src}" alt="${cat}" loading="lazy">`).join('')}</div>` : '';
     let rows = cats[cat].map(p=>{
-      return `<tr><td>${p.Producto}</td><td>${money(p.PrecioFinal)}</td></tr>`;
+      const precio = getPrecioLista(p.ID, lista);
+      return `<tr><td>${p.Producto}</td><td>${money(precio)}</td></tr>`;
     }).join('');
     div.innerHTML = `${gallery}<div class="catbody"><h3>${cat}</h3><table><thead><tr><th>Producto</th><th>Precio</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     wrap.appendChild(div);
   });
-  const pz = document.getElementById('tabla-personalizacion');
-  pz.innerHTML = DATA.personalizacion.map(p=>`<tr><td>${p.Concepto}</td><td>${money(p.Precio)}</td></tr>`).join('');
+  const ad = document.getElementById('tabla-adicionales');
+  ad.innerHTML = DATA.adicionales.map(a=>{
+    const val = a.Tipo === 'Porcentaje' ? ('+' + a.Valor + '%') : money(a.Valor);
+    return `<tr><td>${a.Concepto}</td><td>${val}</td></tr>`;
+  }).join('');
+}
+document.getElementById('cat-lista-select').addEventListener('change', renderCatalogo);
+
+function renderSedes(){
+  const wrap = document.getElementById('sedes-wrap');
+  const bySede = {};
+  DATA.direcciones.forEach(d=>{ (bySede[d.Sede]=bySede[d.Sede]||[]).push(d); });
+  wrap.innerHTML = Object.keys(bySede).map(sede=>{
+    const items = bySede[sede];
+    const dir = items[0].Direccion;
+    const contactos = items.map(i=> i.Contacto ? `<p>${i.Contacto}${i.Telefono? ' · '+i.Telefono:''}</p>` : '').join('');
+    return `<div><h4>${sede}</h4><p>${dir}</p>${contactos}</div>`;
+  }).join('');
 }
 
+/* ============================================================
+   CLIENTES — autocompletado y ficha
+   ============================================================ */
+function populateClientesDatalist(){
+  const dl = document.getElementById('clientes-datalist');
+  dl.innerHTML = (DATA.clientes||[]).map(c=>`<option value="${c.Empresa}">`).join('');
+}
+document.getElementById('q-cliente').addEventListener('change', (e)=>{
+  const match = (DATA.clientes||[]).find(c=>String(c.Empresa||'').trim().toLowerCase() === e.target.value.trim().toLowerCase());
+  if(match){
+    document.getElementById('q-cuit').value = match.CUIT || '';
+    document.getElementById('q-contacto').value = match.Contacto || '';
+    document.getElementById('q-telefono').value = match.Telefono || '';
+    document.getElementById('q-cliente-email').value = match.Email || '';
+    if(match.CondicionFiscal) document.getElementById('q-condicion-fiscal').value = match.CondicionFiscal;
+  }
+});
+
+/* ============================================================
+   COTIZADOR — formulario de ítem
+   ============================================================ */
+function populateItemForm(){
+  const lista = document.getElementById('q-lista').value || 'SanJuan';
+  const sel = document.getElementById('i-producto');
+  sel.innerHTML = DATA.productos.map(p=>`<option value="${p.ID}">${p.Producto} — ${money(getPrecioLista(p.ID, lista))}</option>`).join('');
+  renderLogosDetalle();
+}
+document.getElementById('q-lista').addEventListener('change', ()=>{ populateItemForm(); previewItemTotal(); renderCatalogoIfNeeded(); });
+function renderCatalogoIfNeeded(){ /* la lista del catálogo es independiente; no-op */ }
+
+document.getElementById('i-lleva-logo').addEventListener('change', (e)=>{
+  document.getElementById('i-cant-logos-wrap').style.display = e.target.checked ? 'block' : 'none';
+  document.getElementById('i-logos-detalle').style.display = e.target.checked ? 'block' : 'none';
+  renderLogosDetalle();
+  previewItemTotal();
+});
+document.getElementById('i-cant-logos').addEventListener('input', ()=>{ renderLogosDetalle(); previewItemTotal(); });
+
+function renderLogosDetalle(){
+  const wrap = document.getElementById('i-logos-detalle');
+  if(!document.getElementById('i-lleva-logo').checked){ wrap.innerHTML = ''; return; }
+  const n = Math.max(1, Number(document.getElementById('i-cant-logos').value) || 1);
+  const tecnicaOpts = DATA.adicionales.map(a=>`<option value="${a.ID}">${a.Concepto}</option>`).join('');
+  let html = '';
+  for(let i=1;i<=n;i++){
+    html += `<div class="logo-row" data-logo="${i}">
+      <div class="logo-row-title">Logo ${i}</div>
+      <div class="field"><label>Técnica</label><select class="logo-tecnica">${tecnicaOpts}</select></div>
+      <div class="field"><label>Tamaño</label><select class="logo-tamano"><option>Grande</option><option>Chico</option></select></div>
+      <div class="field"><label>Ubicación</label><select class="logo-ubicacion"><option>Frente</option><option>Espalda</option><option>Manga</option><option>Otro</option></select></div>
+    </div>`;
+  }
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('select').forEach(s=> s.addEventListener('change', previewItemTotal));
+}
+
+function readLogos(){
+  const rows = document.querySelectorAll('#i-logos-detalle .logo-row');
+  return Array.from(rows).map(r=>{
+    const tecnicaId = r.querySelector('.logo-tecnica').value;
+    const tec = DATA.adicionales.find(a=>a.ID===tecnicaId);
+    return {
+      tecnicaId, tecnica: tec ? tec.Concepto : '',
+      tamano: r.querySelector('.logo-tamano').value,
+      ubicacion: r.querySelector('.logo-ubicacion').value
+    };
+  });
+}
+
+function readItemForm(){
+  const lista = document.getElementById('q-lista').value || 'SanJuan';
+  const prodId = document.getElementById('i-producto').value;
+  const prod = DATA.productos.find(p=>p.ID===prodId);
+  const cant = Number(document.getElementById('i-cantidad').value)||0;
+  const unitNeto = getPrecioLista(prodId, lista);
+  let subtotal = unitNeto * cant;
+
+  const llevaLogo = document.getElementById('i-lleva-logo').checked;
+  const logos = llevaLogo ? readLogos() : [];
+  let personalizacionMonto = 0, personalizacionPct = 0;
+  logos.forEach(l=>{
+    const ad = DATA.adicionales.find(a=>a.ID===l.tecnicaId);
+    if(!ad) return;
+    if(ad.Tipo === 'Porcentaje'){ personalizacionPct += Number(ad.Valor); }
+    else { personalizacionMonto += Number(ad.Valor) * cant; }
+  });
+  subtotal += personalizacionMonto;
+  subtotal += subtotal * (personalizacionPct/100);
+
+  return {
+    productId: prodId, productName: prod.Producto, unit: unitNeto, cantidad: cant,
+    talles: document.getElementById('i-talles').value,
+    color: document.getElementById('i-color').value,
+    modelo: document.getElementById('i-modelo').value,
+    personalizacion: { llevaLogo, logos },
+    detalles: document.getElementById('i-detalles').value,
+    subtotal: subtotal,
+    logoFile: document.getElementById('i-logo-file').files[0] || null
+  };
+}
+
+function previewItemTotal(){
+  const it = readItemForm();
+  document.getElementById('i-subtotal').textContent = money(it.subtotal);
+  document.getElementById('i-unitario').textContent = money(it.unit);
+}
+document.addEventListener('input', (e)=>{
+  if(['i-cantidad'].includes(e.target.id)) previewItemTotal();
+});
+document.addEventListener('change', (e)=>{
+  if(e.target.id==='i-producto') previewItemTotal();
+});
+
+function clearItemForm(){
+  document.getElementById('i-cantidad').value = 1;
+  document.getElementById('i-talles').value = '';
+  document.getElementById('i-color').value = '';
+  document.getElementById('i-modelo').value = '';
+  document.getElementById('i-lleva-logo').checked = false;
+  document.getElementById('i-cant-logos').value = 1;
+  document.getElementById('i-cant-logos-wrap').style.display = 'none';
+  document.getElementById('i-logos-detalle').style.display = 'none';
+  document.getElementById('i-logo-file').value = '';
+  document.getElementById('i-detalles').value = '';
+  renderLogosDetalle();
+  EDITING_INDEX = -1;
+  document.getElementById('btn-cancel-edit').style.display = 'none';
+  previewItemTotal();
+}
+
+document.getElementById('btn-add-item').addEventListener('click', async ()=>{
+  const it = readItemForm();
+  const msg = document.getElementById('item-msg');
+  if(!it.cantidad || it.cantidad<1){ msg.innerHTML = '<div class="msg err">Ingresá una cantidad válida.</div>'; return; }
+
+  if(it.logoFile){
+    it.logoBase64 = await fileToBase64(it.logoFile);
+    it.logoName = it.logoFile.name;
+    it.logoMime = it.logoFile.type;
+  }
+  delete it.logoFile;
+
+  if(EDITING_INDEX >= 0){ CART[EDITING_INDEX] = it; msg.innerHTML = '<div class="msg ok">Producto actualizado en el presupuesto.</div>'; }
+  else { CART.push(it); msg.innerHTML = '<div class="msg ok">Producto agregado. Podés seleccionar otro para seguir cargando.</div>'; }
+
+  clearItemForm();
+  renderCart();
+  calcQuoteTotal();
+});
+
+document.getElementById('btn-cancel-edit').addEventListener('click', clearItemForm);
+
+function condicionFiscal(){ return document.getElementById('q-condicion-fiscal').value; }
+function esConsumidorFinal(){ return condicionFiscal() === 'Consumidor Final'; }
+
+function displayUnit(it){
+  const iva = getIvaRate();
+  return esConsumidorFinal() ? it.unit * (1 + iva/100) : it.unit;
+}
+function displaySubtotal(it){
+  const iva = getIvaRate();
+  return esConsumidorFinal() ? it.subtotal * (1 + iva/100) : it.subtotal;
+}
+
+function renderCart(){
+  const wrap = document.getElementById('cart-list');
+  if(CART.length===0){ wrap.innerHTML = '<p class="cart-empty">Todavía no agregaste ningún producto.</p>'; return; }
+  wrap.innerHTML = CART.map((it,idx)=>{
+    const pers = it.personalizacion.llevaLogo && it.personalizacion.logos.length
+      ? it.personalizacion.logos.map(l=>`${l.tecnica} · ${l.tamano} · ${l.ubicacion}`).join(' / ')
+      : 'Sin logo';
+    return `<div class="cart-item">
+      <div class="row1">
+        <div>
+          <div class="name">${it.productName} × ${it.cantidad}</div>
+          <div class="meta">Talles: ${it.talles||'-'} · Color: ${it.color||'-'} · Modelo: ${it.modelo||'-'}</div>
+          <div class="meta">Personalización: ${pers}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="name">${money(displaySubtotal(it))}</div>
+          <div class="meta">Unitario: ${money(displayUnit(it))}</div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn ghost small" data-action="edit" data-idx="${idx}">Editar</button>
+            <button class="btn danger small" data-action="remove" data-idx="${idx}">Quitar</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('cart-list').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  const idx = Number(btn.dataset.idx);
+  if(btn.dataset.action==='remove'){ CART.splice(idx,1); renderCart(); calcQuoteTotal(); }
+  else if(btn.dataset.action==='edit'){ loadItemIntoForm(idx); }
+});
+
+function loadItemIntoForm(idx){
+  const it = CART[idx];
+  EDITING_INDEX = idx;
+  document.getElementById('i-producto').value = it.productId;
+  document.getElementById('i-cantidad').value = it.cantidad;
+  document.getElementById('i-talles').value = it.talles;
+  document.getElementById('i-color').value = it.color;
+  document.getElementById('i-modelo').value = it.modelo;
+  document.getElementById('i-lleva-logo').checked = it.personalizacion.llevaLogo;
+  document.getElementById('i-cant-logos-wrap').style.display = it.personalizacion.llevaLogo ? 'block' : 'none';
+  document.getElementById('i-logos-detalle').style.display = it.personalizacion.llevaLogo ? 'block' : 'none';
+  document.getElementById('i-cant-logos').value = it.personalizacion.logos.length || 1;
+  renderLogosDetalle();
+  const rows = document.querySelectorAll('#i-logos-detalle .logo-row');
+  it.personalizacion.logos.forEach((l,i)=>{
+    if(!rows[i]) return;
+    rows[i].querySelector('.logo-tecnica').value = l.tecnicaId;
+    rows[i].querySelector('.logo-tamano').value = l.tamano;
+    rows[i].querySelector('.logo-ubicacion').value = l.ubicacion;
+  });
+  document.getElementById('i-detalles').value = it.detalles;
+  document.getElementById('btn-cancel-edit').style.display = 'inline-block';
+  previewItemTotal();
+  document.getElementById('i-producto').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function calcQuoteTotal(){
+  const iva = getIvaRate();
+  const subtotalNeto = CART.reduce((s,it)=>s+it.subtotal, 0);
+  let total, ivaMonto = 0;
+  if(esConsumidorFinal()){
+    total = subtotalNeto * (1 + iva/100);
+  }else{
+    ivaMonto = subtotalNeto * (iva/100);
+    total = subtotalNeto + ivaMonto;
+  }
+  document.getElementById('q-total').textContent = money(total);
+  const lineas = CART.map(it=>`<div><span>${it.productName} ×${it.cantidad}</span><span>${money(displaySubtotal(it))}</span></div>`);
+  if(!esConsumidorFinal() && CART.length){
+    lineas.push(`<div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px;"><span>Subtotal neto</span><span>${money(subtotalNeto)}</span></div>`);
+    lineas.push(`<div><span>IVA (${iva}%)</span><span>${money(ivaMonto)}</span></div>`);
+  }else if(CART.length){
+    lineas.push(`<div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px;"><span>IVA incluido (${iva}%)</span><span>—</span></div>`);
+  }
+  document.getElementById('q-breakdown').innerHTML = lineas.join('');
+  return { subtotalNeto, ivaMonto, total };
+}
+document.getElementById('q-condicion-fiscal').addEventListener('change', ()=>{ renderCart(); calcQuoteTotal(); });
+
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=> resolve(r.result.split(',')[1]);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+/* ============================================================
+   ENVÍO DEL PRESUPUESTO COMPLETO
+   ============================================================ */
+document.getElementById('btn-submit-quote').addEventListener('click', async ()=>{
+  const msg = document.getElementById('quote-msg');
+  msg.innerHTML = '';
+  const vendedor = document.getElementById('q-vendedor').value;
+  const emailVendedor = document.getElementById('q-email').value;
+  const cliente = document.getElementById('q-cliente').value;
+
+  if(!vendedor || !emailVendedor || !cliente){ msg.innerHTML = '<div class="msg err">Completá vendedor, email y cliente/empresa.</div>'; return; }
+  if(CART.length===0){ msg.innerHTML = '<div class="msg err">Agregá al menos un producto al presupuesto.</div>'; return; }
+
+  const numero = 'HEMA-' + Date.now().toString(36).toUpperCase();
+  const totales = calcQuoteTotal();
+
+  const payload = {
+    action: 'submitQuote',
+    numeroCotizacion: numero,
+    vendedor, emailVendedor, cliente,
+    cuit: document.getElementById('q-cuit').value,
+    contacto: document.getElementById('q-contacto').value,
+    telefono: document.getElementById('q-telefono').value,
+    email: document.getElementById('q-cliente-email').value,
+    condicionFiscal: condicionFiscal(),
+    listaPrecio: document.getElementById('q-lista').value,
+    items: CART,
+    fechaNecesita: document.getElementById('q-fecha').value,
+    validezOferta: document.getElementById('q-validez').value,
+    condicionesPago: document.getElementById('q-pago').value,
+    plazoEntrega: document.getElementById('q-plazo').value,
+    lugarEntrega: document.getElementById('q-lugar-entrega').value,
+    observaciones: document.getElementById('q-obs').value,
+    ivaRate: getIvaRate(),
+    subtotalNeto: Math.round(totales.subtotalNeto),
+    ivaMonto: Math.round(totales.ivaMonto),
+    precioTotal: Math.round(totales.total)
+  };
+
+  const pdfBase64 = buildQuotePdf(payload, totales);
+  payload.pdfBase64 = pdfBase64;
+
+  if(!API_URL){
+    msg.innerHTML = '<div class="msg err">Modo demo: configurá API_URL en index.html para enviar el mail y registrar el presupuesto en la planilla. El PDF se descargó localmente.</div>';
+    downloadPdf(pdfBase64, numero);
+    return;
+  }
+
+  msg.innerHTML = '<div class="msg ok">Enviando presupuesto...</div>';
+  try{
+    const res = await fetch(API_URL, {method:'POST', body: JSON.stringify(payload)});
+    const json = await res.json();
+    if(json.ok){
+      msg.innerHTML = `<div class="msg ok">Presupuesto ${numero} enviado a ${emailVendedor} y registrado para seguimiento. <a href="${json.pdfUrl}" target="_blank">Ver PDF</a></div>`;
+      CART = []; renderCart(); calcQuoteTotal();
+      ['q-fecha','q-plazo','q-pago','q-lugar-entrega','q-obs','q-cuit','q-contacto','q-telefono','q-cliente-email'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('q-validez').value = '7 días';
+      await loadData(); populateClientesDatalist();
+    }else{ throw new Error(json.error || 'Error desconocido'); }
+  }catch(err){
+    msg.innerHTML = `<div class="msg err">No se pudo enviar (${err.message}). Se descargó el PDF localmente.</div>`;
+    downloadPdf(pdfBase64, numero);
+  }
+});
+
+function downloadPdf(base64, numero){
+  const link = document.createElement('a');
+  link.href = 'data:application/pdf;base64,' + base64;
+  link.download = 'Presupuesto_' + numero + '.pdf';
+  link.click();
+}
+
+/* ============================================================
+   PDF DEL PRESUPUESTO — branding HEMA
+   ============================================================ */
+const PDF_BLUE = [31, 92, 163];
+const PDF_NAVY = [18, 32, 58];
+
+function buildQuotePdf(payload, totales){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const pageW = 210, margin = 14;
+
+  // Barra superior
+  doc.setFillColor(...PDF_BLUE); doc.rect(0, 0, pageW, 7, 'F');
+
+  // Header
+  let y = 20;
+  doc.setTextColor(...PDF_NAVY); doc.setFont('helvetica','bold'); doc.setFontSize(20);
+  doc.text('HEMA', margin, y);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(...PDF_BLUE);
+  doc.text('INDUMENTARIA', margin, y+5);
+
+  doc.setFont('helvetica','italic'); doc.setFontSize(10.5); doc.setTextColor(...PDF_BLUE);
+  doc.text('Vestimos el trabajo. Protegemos a quienes lo hacen.', pageW/2, y-4, {align:'center'});
+  doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(...PDF_NAVY);
+  doc.text('COTIZACIÓN COMERCIAL', pageW/2, y+4, {align:'center'});
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...PDF_NAVY);
+  doc.text('SEGURIDAD INDUSTRIAL', pageW-margin, y-2, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(120);
+  doc.text('Calzado | Guantes | Protección visual | Chalecos', pageW-margin, y+2, {align:'right'});
+
+  y += 14;
+  doc.setDrawColor(220); doc.line(margin, y, pageW-margin, y);
+  y += 8;
+
+  // Barra "DATOS DEL CLIENTE"
+  doc.setFillColor(...PDF_BLUE); doc.rect(margin-2, y-5, pageW-(margin-2)*2, 7, 'F');
+  doc.setTextColor(255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('DATOS DEL CLIENTE', margin, y);
+  y += 10;
+
+  doc.setTextColor(...PDF_NAVY); doc.setFontSize(9.5);
+  const colL = margin, colR = pageW/2 + 6;
+  const clienteLines = [
+    ['Empresa / Razón social', payload.cliente],
+    ['CUIT', payload.cuit || '-'],
+    ['Contacto', payload.contacto || '-'],
+    ['Condición fiscal', payload.condicionFiscal],
+    ['Lugar de entrega', payload.lugarEntrega || '-']
+  ];
+  const fechaLines = [
+    ['Fecha', new Date().toLocaleDateString('es-AR')],
+    ['Validez de oferta', payload.validezOferta || '-'],
+    ['E-mail / WhatsApp', payload.email || payload.telefono || '-']
+  ];
+  let yl = y, yr = y;
+  clienteLines.forEach(([k,v])=>{
+    doc.setFont('helvetica','bold'); doc.text(k, colL, yl);
+    doc.setFont('helvetica','normal'); doc.text(String(v||'-'), colL, yl+4.5);
+    yl += 10;
+  });
+  fechaLines.forEach(([k,v])=>{
+    doc.setFont('helvetica','bold'); doc.text(k, colR, yr);
+    doc.setFont('helvetica','normal'); doc.text(String(v||'-'), colR, yr+4.5);
+    yr += 10;
+  });
+  y = Math.max(yl, yr) + 4;
+
+  // Barra "DETALLE DE LA COTIZACIÓN"
+  doc.setFillColor(...PDF_BLUE); doc.rect(margin-2, y-5, pageW-(margin-2)*2, 7, 'F');
+  doc.setTextColor(255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('DETALLE DE LA COTIZACIÓN', margin, y);
+  y += 6;
+
+  const filas = payload.items.map(it=>{
+    const pers = it.personalizacion.llevaLogo && it.personalizacion.logos.length
+      ? it.personalizacion.logos.map(l=>`${l.tecnica} (${l.tamano}, ${l.ubicacion})`).join(' / ')
+      : 'Sin logo';
+    return [
+      it.productName + (it.talles ? ('\n' + it.talles) : '') + (it.color? ('\n'+it.color):''),
+      String(it.cantidad),
+      money(displayUnit(it)),
+      money(displaySubtotal(it)),
+      pers,
+      it.detalles || ''
+    ];
+  });
+
+  doc.autoTable({
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [['Producto / Prenda','Cantidad','Precio unitario neto','Subtotal neto','Personalización','Observaciones']],
+    body: filas,
+    styles: { fontSize: 8.5, cellPadding: 2.2, textColor: [24,34,51] },
+    headStyles: { fillColor: PDF_NAVY, textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [246,246,243] },
+    columnStyles: { 1: {halign:'center'}, 2: {halign:'right'}, 3: {halign:'right'} }
+  });
+  y = doc.lastAutoTable.finalY + 8;
+
+  if(y > 250){ doc.addPage(); y = 20; }
+
+  // Totales
+  doc.setFontSize(10);
+  if(payload.condicionFiscal === 'Consumidor Final'){
+    doc.setFont('helvetica','bold');
+    doc.text('TOTAL (IVA incluido): ' + money(totales.total), pageW-margin, y, {align:'right'});
+    y += 8;
+  }else{
+    doc.setFont('helvetica','normal');
+    doc.text('Subtotal neto: ' + money(totales.subtotalNeto), pageW-margin, y, {align:'right'}); y += 5.5;
+    doc.text('IVA (' + payload.ivaRate + '%): ' + money(totales.ivaMonto), pageW-margin, y, {align:'right'}); y += 5.5;
+    doc.setFont('helvetica','bold'); doc.setFontSize(11);
+    doc.text('TOTAL: ' + money(totales.total), pageW-margin, y, {align:'right'});
+    y += 9;
+  }
+
+  y += 3;
+  doc.setDrawColor(220); doc.line(margin, y, pageW-margin, y);
+  y += 8;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(...PDF_NAVY);
+  const condiciones = [
+    ['Forma de pago', payload.condicionesPago],
+    ['Plazo de entrega', payload.plazoEntrega],
+    ['Lugar de entrega', payload.lugarEntrega],
+  ];
+  condiciones.forEach(([k,v])=>{
+    doc.setFont('helvetica','bold'); doc.text(k, margin, y);
+    doc.setFont('helvetica','normal'); doc.text(String(v||'-'), margin+45, y);
+    y += 6;
+  });
+  doc.setFont('helvetica','bold'); doc.text('Observaciones', margin, y);
+  const obsSplit = doc.splitTextToSize(payload.observaciones || '-', 120);
+  doc.setFont('helvetica','normal'); doc.text(obsSplit, margin+45, y);
+  y += 6*obsSplit.length + 6;
+
+  doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(120);
+  doc.text('Los precios indicados corresponden a la presente propuesta comercial y quedan sujetos a las condiciones detalladas.', pageW/2, y, {align:'center', maxWidth:170});
+  y += 8;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...PDF_BLUE);
+  doc.text('HEMA INDUMENTARIA  |  Vestimos el trabajo. Protegemos a quienes lo hacen.', pageW/2, y, {align:'center'});
+
+  return doc.output('datauristring').split(',')[1];
+}
+
+/* ============================================================
+   CATÁLOGO PDF (sin precios) — sin cambios de fondo
+   ============================================================ */
 function loadImageAsDataUrl(src){
   return new Promise((resolve, reject)=>{
     const img = new Image();
@@ -512,313 +1075,6 @@ document.getElementById('btn-download-catalog').addEventListener('click', async 
   catch(err){ msg.innerHTML = '<div class="msg err">No se pudo generar el PDF (' + err.message + ').</div>'; }
 });
 
-function renderSedes(){
-  const wrap = document.getElementById('sedes-wrap');
-  const bySede = {};
-  DATA.direcciones.forEach(d=>{ (bySede[d.Sede]=bySede[d.Sede]||[]).push(d); });
-  wrap.innerHTML = Object.keys(bySede).map(sede=>{
-    const items = bySede[sede];
-    const dir = items[0].Direccion;
-    const contactos = items.map(i=> i.Contacto ? `<p>${i.Contacto}${i.Telefono? ' · '+i.Telefono:''}</p>` : '').join('');
-    return `<div><h4>${sede}</h4><p>${dir}</p>${contactos}</div>`;
-  }).join('');
-}
-
-/* ============================================================
-   COTIZADOR — formulario de ítem
-   ============================================================ */
-function populateItemForm(){
-  const sel = document.getElementById('i-producto');
-  sel.innerHTML = DATA.productos.map(p=>`<option value="${p.ID}">${p.Producto} — ${money(p.PrecioFinal)}</option>`).join('');
-
-  const tecnica = document.getElementById('i-tecnica');
-  tecnica.innerHTML = DATA.personalizacion.map(p=>`<option value="${p.ID}">${p.Concepto} (${money(p.Precio)})</option>`).join('') + '<option value="">Otro / sin cargo</option>';
-
-  const modsWrap = document.getElementById('i-modificadores');
-  modsWrap.innerHTML = DATA.modificadores.map(m=>`
-    <div class="checkrow">
-      <input type="checkbox" class="i-mod" data-pct="${m.Porcentaje}" data-item="${m.Item}" id="mod-${m.ID}">
-      <label style="margin:0;text-transform:none;font-size:13px;color:var(--text);" for="mod-${m.ID}">${m.Item} <span class="mono" style="color:var(--muted);">(+${m.Porcentaje}%)</span></label>
-    </div>`).join('');
-}
-
-function readItemForm(){
-  const prodId = document.getElementById('i-producto').value;
-  const prod = DATA.productos.find(p=>p.ID===prodId);
-  const cant = Number(document.getElementById('i-cantidad').value)||0;
-  const unit = Number(prod.PrecioFinal);
-  let subtotal = unit * cant;
-
-  const llevaLogo = document.getElementById('i-lleva-logo').checked;
-  const cantLogos = Number(document.getElementById('i-cant-logos').value)||0;
-  const tecId = document.getElementById('i-tecnica').value;
-  const tec = DATA.personalizacion.find(p=>p.ID===tecId);
-  let personalizacionTotal = 0;
-  if(llevaLogo && tec && cantLogos>0){ personalizacionTotal = tec.Precio * cantLogos * cant; }
-  subtotal += personalizacionTotal;
-
-  let pctTotal = 0; const modsAplicados = [];
-  document.querySelectorAll('.i-mod:checked').forEach(cb=>{
-    pctTotal += Number(cb.dataset.pct);
-    modsAplicados.push({item:cb.dataset.item, pct:Number(cb.dataset.pct)});
-  });
-  const recargo = subtotal * (pctTotal/100);
-  const total = subtotal + recargo;
-
-  return {
-    productId: prodId, productName: prod.Producto, unit, cantidad: cant,
-    talles: document.getElementById('i-talles').value,
-    color: document.getElementById('i-color').value,
-    tela: document.getElementById('i-tela').value,
-    modelo: document.getElementById('i-modelo').value,
-    personalizacion: {
-      llevaLogo, cantidad: cantLogos,
-      tecnicaId: tecId, tecnicaLabel: tec ? tec.Concepto : '',
-      ubicacion: document.getElementById('i-ubicacion').value,
-      medida: document.getElementById('i-medida-logo').value
-    },
-    personalizacionTotal,
-    modificadores: modsAplicados,
-    recargoPct: pctTotal,
-    recargoMonto: recargo,
-    detalles: document.getElementById('i-detalles').value,
-    subtotal: total,
-    logoFile: document.getElementById('i-logo-file').files[0] || null
-  };
-}
-
-function previewItemTotal(){
-  const it = readItemForm();
-  document.getElementById('i-subtotal').textContent = money(it.subtotal);
-}
-document.addEventListener('input', (e)=>{
-  if(['i-cantidad','i-cant-logos'].includes(e.target.id)) previewItemTotal();
-});
-document.addEventListener('change', (e)=>{
-  if(e.target.id==='i-producto' || e.target.id==='i-lleva-logo' || e.target.id==='i-tecnica' || e.target.classList.contains('i-mod')) previewItemTotal();
-});
-
-function clearItemForm(){
-  document.getElementById('i-cantidad').value = 1;
-  document.getElementById('i-talles').value = '';
-  document.getElementById('i-color').value = '';
-  document.getElementById('i-tela').value = '';
-  document.getElementById('i-modelo').value = '';
-  document.getElementById('i-lleva-logo').checked = false;
-  document.getElementById('i-cant-logos').value = 0;
-  document.getElementById('i-ubicacion').selectedIndex = 0;
-  document.getElementById('i-medida-logo').value = '';
-  document.getElementById('i-logo-file').value = '';
-  document.querySelectorAll('.i-mod').forEach(cb=>cb.checked=false);
-  document.getElementById('i-detalles').value = '';
-  EDITING_INDEX = -1;
-  document.getElementById('btn-cancel-edit').style.display = 'none';
-  previewItemTotal();
-}
-
-document.getElementById('btn-add-item').addEventListener('click', async ()=>{
-  const it = readItemForm();
-  const msg = document.getElementById('item-msg');
-  if(!it.cantidad || it.cantidad<1){ msg.innerHTML = '<div class="msg err">Ingresá una cantidad válida.</div>'; return; }
-
-  if(it.logoFile){
-    it.logoBase64 = await fileToBase64(it.logoFile);
-    it.logoName = it.logoFile.name;
-    it.logoMime = it.logoFile.type;
-  }
-  delete it.logoFile;
-
-  if(EDITING_INDEX >= 0){ CART[EDITING_INDEX] = it; msg.innerHTML = '<div class="msg ok">Producto actualizado en el presupuesto.</div>'; }
-  else { CART.push(it); msg.innerHTML = '<div class="msg ok">Producto agregado. Podés seleccionar otro para seguir cargando.</div>'; }
-
-  clearItemForm();
-  renderCart();
-  calcQuoteTotal();
-});
-
-document.getElementById('btn-cancel-edit').addEventListener('click', clearItemForm);
-
-function renderCart(){
-  const wrap = document.getElementById('cart-list');
-  if(CART.length===0){ wrap.innerHTML = '<p class="cart-empty">Todavía no agregaste ningún producto.</p>'; return; }
-  wrap.innerHTML = CART.map((it,idx)=>{
-    const pers = it.personalizacion.llevaLogo ? `${it.personalizacion.cantidad}x ${it.personalizacion.tecnicaLabel} — ${it.personalizacion.ubicacion}` : 'Sin logo';
-    const mods = it.modificadores.length ? it.modificadores.map(m=>m.item).join(', ') : 'Sin recargos adicionales';
-    return `<div class="cart-item">
-      <div class="row1">
-        <div>
-          <div class="name">${it.productName} × ${it.cantidad}</div>
-          <div class="meta">Talles: ${it.talles||'-'} · Color: ${it.color||'-'} · Tela: ${it.tela||'-'}</div>
-          <div class="meta">Personalización: ${pers}</div>
-          <div class="meta">Detalles: ${mods}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="name">${money(it.subtotal)}</div>
-          <div class="actions" style="margin-top:6px;">
-            <button class="btn ghost small" data-action="edit" data-idx="${idx}">Editar</button>
-            <button class="btn danger small" data-action="remove" data-idx="${idx}">Quitar</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-document.getElementById('cart-list').addEventListener('click', (e)=>{
-  const btn = e.target.closest('button'); if(!btn) return;
-  const idx = Number(btn.dataset.idx);
-  if(btn.dataset.action==='remove'){ CART.splice(idx,1); renderCart(); calcQuoteTotal(); }
-  else if(btn.dataset.action==='edit'){ loadItemIntoForm(idx); }
-});
-
-function loadItemIntoForm(idx){
-  const it = CART[idx];
-  EDITING_INDEX = idx;
-  document.getElementById('i-producto').value = it.productId;
-  document.getElementById('i-cantidad').value = it.cantidad;
-  document.getElementById('i-talles').value = it.talles;
-  document.getElementById('i-color').value = it.color;
-  document.getElementById('i-tela').value = it.tela;
-  document.getElementById('i-modelo').value = it.modelo;
-  document.getElementById('i-lleva-logo').checked = it.personalizacion.llevaLogo;
-  document.getElementById('i-cant-logos').value = it.personalizacion.cantidad;
-  document.getElementById('i-tecnica').value = it.personalizacion.tecnicaId;
-  document.getElementById('i-ubicacion').value = it.personalizacion.ubicacion;
-  document.getElementById('i-medida-logo').value = it.personalizacion.medida;
-  document.querySelectorAll('.i-mod').forEach(cb=>{
-    cb.checked = it.modificadores.some(m=>m.item===cb.dataset.item);
-  });
-  document.getElementById('i-detalles').value = it.detalles;
-  document.getElementById('btn-cancel-edit').style.display = 'inline-block';
-  previewItemTotal();
-  document.getElementById('i-producto').scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-function calcQuoteTotal(){
-  const total = CART.reduce((s,it)=>s+it.subtotal, 0);
-  document.getElementById('q-total').textContent = money(total);
-  document.getElementById('q-breakdown').innerHTML = CART.map(it=>`<div><span>${it.productName} ×${it.cantidad}</span><span>${money(it.subtotal)}</span></div>`).join('');
-  return total;
-}
-
-function fileToBase64(file){
-  return new Promise((resolve,reject)=>{
-    const r = new FileReader();
-    r.onload = ()=> resolve(r.result.split(',')[1]);
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
-}
-
-/* ============================================================
-   ENVÍO DEL PRESUPUESTO COMPLETO
-   ============================================================ */
-document.getElementById('btn-submit-quote').addEventListener('click', async ()=>{
-  const msg = document.getElementById('quote-msg');
-  msg.innerHTML = '';
-  const vendedor = document.getElementById('q-vendedor').value;
-  const emailVendedor = document.getElementById('q-email').value;
-  const cliente = document.getElementById('q-cliente').value;
-
-  if(!vendedor || !emailVendedor || !cliente){ msg.innerHTML = '<div class="msg err">Completá vendedor, email y cliente/empresa.</div>'; return; }
-  if(CART.length===0){ msg.innerHTML = '<div class="msg err">Agregá al menos un producto al presupuesto.</div>'; return; }
-
-  const numero = 'HEMA-' + Date.now().toString(36).toUpperCase();
-  const total = calcQuoteTotal();
-
-  const payload = {
-    action: 'submitQuote',
-    numeroCotizacion: numero,
-    vendedor, emailVendedor, cliente,
-    items: CART,
-    fechaNecesita: document.getElementById('q-fecha').value,
-    condicionesPago: document.getElementById('q-pago').value,
-    observaciones: document.getElementById('q-obs').value,
-    precioTotal: Math.round(total)
-  };
-
-  const pdfBase64 = buildQuotePdf(payload);
-  payload.pdfBase64 = pdfBase64;
-
-  if(!API_URL){
-    msg.innerHTML = '<div class="msg err">Modo demo: configurá API_URL en index.html para enviar el mail y registrar el presupuesto en la planilla. El PDF se descargó localmente.</div>';
-    downloadPdf(pdfBase64, numero);
-    return;
-  }
-
-  msg.innerHTML = '<div class="msg ok">Enviando presupuesto...</div>';
-  try{
-    const res = await fetch(API_URL, {method:'POST', body: JSON.stringify(payload)});
-    const json = await res.json();
-    if(json.ok){
-      msg.innerHTML = `<div class="msg ok">Presupuesto ${numero} enviado a ${emailVendedor} y registrado para seguimiento. <a href="${json.pdfUrl}" target="_blank">Ver PDF</a></div>`;
-      CART = []; renderCart(); calcQuoteTotal();
-      document.getElementById('q-fecha').value=''; document.getElementById('q-pago').value=''; document.getElementById('q-obs').value='';
-    }else{ throw new Error(json.error || 'Error desconocido'); }
-  }catch(err){
-    msg.innerHTML = `<div class="msg err">No se pudo enviar (${err.message}). Se descargó el PDF localmente.</div>`;
-    downloadPdf(pdfBase64, numero);
-  }
-});
-
-function downloadPdf(base64, numero){
-  const link = document.createElement('a');
-  link.href = 'data:application/pdf;base64,' + base64;
-  link.download = 'Presupuesto_' + numero + '.pdf';
-  link.click();
-}
-
-function buildQuotePdf(payload){
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  let y = 20;
-  doc.setFont('helvetica','bold'); doc.setFontSize(18);
-  doc.text('HEMA INDUMENTARIA', 14, y);
-  doc.setFontSize(11); doc.setFont('helvetica','normal');
-  doc.text('Presupuesto Nº ' + payload.numeroCotizacion, 14, y+7);
-  doc.text('Fecha: ' + new Date().toLocaleDateString('es-AR'), 150, y+7);
-  y += 20;
-  doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
-
-  doc.setFont('helvetica','bold'); doc.text('Vendedor:', 14, y); doc.setFont('helvetica','normal'); doc.text(payload.vendedor||'-', 45, y);
-  y += 6;
-  doc.setFont('helvetica','bold'); doc.text('Cliente/Empresa:', 14, y); doc.setFont('helvetica','normal'); doc.text(payload.cliente||'-', 45, y);
-  y += 10;
-
-  payload.items.forEach((it, i)=>{
-    if(y > 255){ doc.addPage(); y = 20; }
-    doc.setFont('helvetica','bold'); doc.setFontSize(12);
-    doc.text((i+1) + '. ' + it.productName + ' × ' + it.cantidad, 14, y); y += 6;
-    doc.setFontSize(10); doc.setFont('helvetica','normal');
-    const pers = it.personalizacion.llevaLogo ? (it.personalizacion.cantidad + ' x ' + it.personalizacion.tecnicaLabel + ' — ' + it.personalizacion.ubicacion + ' (' + (it.personalizacion.medida||'s/d') + ')') : 'No';
-    const detailLines = [
-      'Talles: ' + (it.talles||'-') + '   Color: ' + (it.color||'-') + '   Tela: ' + (it.tela||'-'),
-      'Modelo/referencia: ' + (it.modelo||'-'),
-      'Logo: ' + pers,
-      'Detalles de confección: ' + (it.modificadores.map(m=>m.item).join(', ') || 'Ninguno') + (it.detalles? (' — ' + it.detalles) : '')
-    ];
-    detailLines.forEach(line=>{
-      const split = doc.splitTextToSize(line, 175);
-      doc.text(split, 16, y); y += 5 * split.length;
-    });
-    doc.setFont('helvetica','bold'); doc.text('Subtotal: ' + money(it.subtotal), 16, y); y += 9;
-  });
-
-  doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
-  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.text('TOTAL DEL PRESUPUESTO: ' + money(payload.precioTotal), 14, y);
-  y += 8;
-  doc.setFontSize(10); doc.setFont('helvetica','normal');
-  if(payload.fechaNecesita){ doc.text('Fecha requerida: ' + payload.fechaNecesita, 14, y); y+=6; }
-  if(payload.condicionesPago){ doc.text('Condiciones de pago: ' + payload.condicionesPago, 14, y); y+=6; }
-  if(payload.observaciones){ const s = doc.splitTextToSize('Observaciones: ' + payload.observaciones, 180); doc.text(s, 14, y); y += 6*s.length; }
-
-  y += 6;
-  doc.setFontSize(9); doc.setTextColor(120);
-  doc.text('Precios sin IVA. Presupuesto sujeto a confirmación de stock y disponibilidad de talles. Documento no válido como factura.', 14, y, {maxWidth:180});
-
-  return doc.output('datauristring').split(',')[1];
-}
-
 /* ============================================================
    ADMIN
    ============================================================ */
@@ -846,30 +1102,25 @@ document.getElementById('btn-login').addEventListener('click', async ()=>{
 
 function renderAdmin(){
   const tp = document.getElementById('admin-productos');
-  tp.innerHTML = DATA.productos.map(p=>`
-    <tr data-id="${p.ID}">
+  tp.innerHTML = DATA.productos.map(p=>{
+    const row = DATA.listaPrecios.find(l=>l.ID===p.ID) || {};
+    return `<tr data-id="${p.ID}">
       <td>${p.Producto}</td>
-      <td>${money(p.PrecioBase)}</td>
-      <td>${p.PrecioCompetencia?money(p.PrecioCompetencia):'—'}</td>
-      <td><input class="admin-precio" style="width:100px;" value="${p.PrecioFinal}"></td>
-      <td><input class="admin-comentario" value="${p.Comentario||''}"></td>
+      <td><input class="admin-precio" data-lista="SanLuis" style="width:90px;" value="${row.SanLuis||0}"></td>
+      <td><input class="admin-precio" data-lista="SanJuan" style="width:90px;" value="${row.SanJuan||0}"></td>
+      <td><input class="admin-precio" data-lista="BsAs" style="width:90px;" value="${row.BsAs||0}"></td>
+      <td><input class="admin-precio" data-lista="SanLuisMinorista" style="width:90px;" value="${row.SanLuisMinorista||0}"></td>
       <td><button class="btn ghost small btn-save-prod">Guardar</button></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
-  const pz = document.getElementById('admin-personalizacion');
-  pz.innerHTML = DATA.personalizacion.map(p=>`
-    <tr data-id="${p.ID}">
-      <td>${p.Concepto}</td>
-      <td><input class="admin-pz-precio" style="width:100px;" value="${p.Precio}"></td>
-      <td><button class="btn ghost small btn-save-pz">Guardar</button></td>
-    </tr>`).join('');
-
-  const md = document.getElementById('admin-modificadores');
-  md.innerHTML = DATA.modificadores.map(m=>`
-    <tr data-id="${m.ID}">
-      <td>${m.Item}</td>
-      <td><input class="admin-mod-pct" style="width:80px;" value="${m.Porcentaje}"></td>
-      <td><button class="btn ghost small btn-save-mod">Guardar</button></td>
+  const ad = document.getElementById('admin-adicionales');
+  ad.innerHTML = DATA.adicionales.map(a=>`
+    <tr data-id="${a.ID}">
+      <td>${a.Concepto}</td>
+      <td>${a.Tipo}</td>
+      <td><input class="admin-ad-valor" style="width:100px;" value="${a.Valor}"></td>
+      <td><button class="btn ghost small btn-save-ad">Guardar</button></td>
     </tr>`).join('');
 }
 
@@ -881,11 +1132,15 @@ async function callApi(payload){
 
 document.getElementById('btn-global-update').addEventListener('click', async ()=>{
   const pct = Number(document.getElementById('admin-global-pct').value);
+  const lista = document.getElementById('admin-global-lista').value;
   const box = document.getElementById('admin-global-msg');
   if(isNaN(pct)){ box.innerHTML = '<div class="msg err">Ingresá un porcentaje válido.</div>'; return; }
-  const json = await callApi({action:'updateGlobal', password: ADMIN_PASS, percent: pct});
+  const json = await callApi({action:'updateGlobal', password: ADMIN_PASS, percent: pct, lista});
   if(json.ok){
-    if(json.demo){ DATA.productos.forEach(p=> p.PrecioFinal = Math.round(p.PrecioFinal*(1+pct/100)*100)/100); }
+    if(json.demo){
+      const listas = lista==='Todas' ? ['SanLuis','SanJuan','BsAs','SanLuisMinorista'] : [lista];
+      DATA.listaPrecios.forEach(row=> listas.forEach(l=>{ if(row[l]) row[l] = Math.round(row[l]*(1+pct/100)*100)/100; }));
+    }
     box.innerHTML = '<div class="msg ok">Precios actualizados en '+pct+'%.</div>';
     renderAdmin(); renderCatalogo(); populateItemForm();
   }else{ box.innerHTML = '<div class="msg err">'+(json.error||'Error')+'</div>'; }
@@ -894,34 +1149,23 @@ document.getElementById('btn-global-update').addEventListener('click', async ()=
 document.getElementById('admin-productos').addEventListener('click', async (e)=>{
   if(!e.target.classList.contains('btn-save-prod')) return;
   const tr = e.target.closest('tr'); const id = tr.dataset.id;
-  const precio = tr.querySelector('.admin-precio').value;
-  const comentario = tr.querySelector('.admin-comentario').value;
-  const json = await callApi({action:'updateProduct', password:ADMIN_PASS, id, precio, comentario});
-  if(json.ok){
-    const p = DATA.productos.find(p=>p.ID===id); p.PrecioFinal=Number(precio); p.Comentario=comentario;
-    renderCatalogo(); populateItemForm();
-  }else alert(json.error||'Error al guardar');
+  const inputs = tr.querySelectorAll('.admin-precio');
+  for(const inp of inputs){
+    const json = await callApi({action:'updateListaPrecio', password:ADMIN_PASS, id, lista:inp.dataset.lista, precio:inp.value});
+    if(!json.ok){ alert(json.error||'Error al guardar'); return; }
+    const row = DATA.listaPrecios.find(l=>l.ID===id); if(row) row[inp.dataset.lista] = Number(inp.value);
+  }
+  renderCatalogo(); populateItemForm();
 });
 
-document.getElementById('admin-personalizacion').addEventListener('click', async (e)=>{
-  if(!e.target.classList.contains('btn-save-pz')) return;
+document.getElementById('admin-adicionales').addEventListener('click', async (e)=>{
+  if(!e.target.classList.contains('btn-save-ad')) return;
   const tr = e.target.closest('tr'); const id = tr.dataset.id;
-  const precio = tr.querySelector('.admin-pz-precio').value;
-  const json = await callApi({action:'updatePersonalizacion', password:ADMIN_PASS, id, precio});
+  const valor = tr.querySelector('.admin-ad-valor').value;
+  const json = await callApi({action:'updateAdicional', password:ADMIN_PASS, id, valor});
   if(json.ok){
-    const p = DATA.personalizacion.find(p=>p.ID===id); p.Precio=Number(precio);
-    renderCatalogo(); populateItemForm();
-  }else alert(json.error||'Error al guardar');
-});
-
-document.getElementById('admin-modificadores').addEventListener('click', async (e)=>{
-  if(!e.target.classList.contains('btn-save-mod')) return;
-  const tr = e.target.closest('tr'); const id = tr.dataset.id;
-  const porcentaje = tr.querySelector('.admin-mod-pct').value;
-  const json = await callApi({action:'updateModificador', password:ADMIN_PASS, id, porcentaje});
-  if(json.ok){
-    const m = DATA.modificadores.find(m=>m.ID===id); m.Porcentaje=Number(porcentaje);
-    populateItemForm();
+    const a = DATA.adicionales.find(a=>a.ID===id); a.Valor=Number(valor);
+    renderCatalogo(); renderLogosDetalle(); previewItemTotal();
   }else alert(json.error||'Error al guardar');
 });
 
@@ -929,9 +1173,11 @@ document.getElementById('admin-modificadores').addEventListener('click', async (
    INIT
    ============================================================ */
 (async function init(){
+  populateListaSelectors();
   await loadData();
   renderCatalogo();
   renderSedes();
+  populateClientesDatalist();
   populateItemForm();
   previewItemTotal();
   renderCart();
