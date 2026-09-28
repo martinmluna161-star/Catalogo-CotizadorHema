@@ -108,7 +108,7 @@
 
 <script>
   // Pegar acá la URL del Web App de Apps Script una vez desplegado (ver SETUP.md).
-  const API_URL = "https://script.google.com/macros/s/AKfycbyEg6Wvb4XvJLM6um71p85RKaYS99ps8xPQredQuKWNHo-9JG2aw2V27z-036WD9F0nfg/exec"; // ej: "https://script.google.com/macros/s/AKfycb.../exec"
+  const API_URL = "https://script.google.com/macros/s/AKfycbzcfK_aEZjPvVKTV8DmWixoq9--B-idOkm6bxMdMpSzlQtIwk6S9sfdcWTptAmQR9zb0A/exec"; // ej: "https://script.google.com/macros/s/AKfycb.../exec"
 </script>
 
 <div id="apiwarn" class="apiwarn" style="display:none;">
@@ -532,12 +532,7 @@ document.getElementById('q-cliente').addEventListener('change', (e)=>{
 function populateItemForm(){
   const lista = document.getElementById('q-lista').value || 'SanJuan';
   const sel = document.getElementById('i-producto');
-  
-  // Usar p.ID en el value:
-  sel.innerHTML = DATA.productos.map(p => 
-    `<option value="${p.ID}">${p.Producto} — ${money(getPrecioLista(p.ID, lista))}</option>`
-  ).join('');
-  
+  sel.innerHTML = DATA.productos.map(p=>`<option value="${p.ID}">${p.Producto} — ${money(getPrecioLista(p.ID, lista))}</option>`).join('');
   renderLogosDetalle();
 }
 document.getElementById('q-lista').addEventListener('change', ()=>{ populateItemForm(); previewItemTotal(); renderCatalogoIfNeeded(); });
@@ -585,62 +580,20 @@ function readLogos(){
 function readItemForm(){
   const lista = document.getElementById('q-lista').value || 'SanJuan';
   const prodId = document.getElementById('i-producto').value;
-  
-  // Buscar por ID o por nombre como fallback
-  const prod = DATA.productos.find(p => p.ID === prodId || p.Producto === prodId);
-  
-  // Retorno defensivo si aún no cargaron los productos
-  if (!prod) {
-    return {
-      productId: '',
-      productName: '',
-      unit: 0,
-      cantidad: 0,
-      talles: '',
-      color: '',
-      modelo: '',
-      personalizacion: { llevaLogo: false, logos: [] },
-      detalles: '',
-      subtotal: 0,
-      logoFile: null
-    };
-  }
-
-  const cant = Number(document.getElementById('i-cantidad').value) || 0;
-  const unitNeto = getPrecioLista(prod.ID, lista);
+  const prod = DATA.productos.find(p=>p.ID===prodId);
+  const cant = Number(document.getElementById('i-cantidad').value)||0;
+  const unitNeto = getPrecioLista(prodId, lista);
   let subtotal = unitNeto * cant;
 
   const llevaLogo = document.getElementById('i-lleva-logo').checked;
   const logos = llevaLogo ? readLogos() : [];
   let personalizacionMonto = 0, personalizacionPct = 0;
-  
-  logos.forEach(l => {
-    const ad = DATA.adicionales.find(a => a.ID === l.tecnicaId);
-    if (!ad) return;
-    if (ad.Tipo === 'Porcentaje') { 
-      personalizacionPct += Number(ad.Valor); 
-    } else { 
-      personalizacionMonto += Number(ad.Valor) * cant; 
-    }
+  logos.forEach(l=>{
+    const ad = DATA.adicionales.find(a=>a.ID===l.tecnicaId);
+    if(!ad) return;
+    if(ad.Tipo === 'Porcentaje'){ personalizacionPct += Number(ad.Valor); }
+    else { personalizacionMonto += Number(ad.Valor) * cant; }
   });
-
-  subtotal += personalizacionMonto;
-  subtotal += subtotal * (personalizacionPct / 100);
-
-  return {
-    productId: prod.ID,
-    productName: prod.Producto,
-    unit: unitNeto,
-    cantidad: cant,
-    talles: document.getElementById('i-talles').value,
-    color: document.getElementById('i-color').value,
-    modelo: document.getElementById('i-modelo').value,
-    personalizacion: { llevaLogo, logos },
-    detalles: document.getElementById('i-detalles').value,
-    subtotal: subtotal,
-    logoFile: document.getElementById('i-logo-file').files[0] || null
-  };
-}
   subtotal += personalizacionMonto;
   subtotal += subtotal * (personalizacionPct/100);
 
@@ -850,7 +803,7 @@ document.getElementById('btn-submit-quote').addEventListener('click', async ()=>
     precioTotal: Math.round(totales.total)
   };
 
-  const pdfBase64 = buildQuotePdf(payload, totales);
+  const pdfBase64 = await buildQuotePdf(payload, totales);
   payload.pdfBase64 = pdfBase64;
 
   if(!API_URL){
@@ -889,7 +842,7 @@ function downloadPdf(base64, numero){
 const PDF_BLUE = [31, 92, 163];
 const PDF_NAVY = [18, 32, 58];
 
-function buildQuotePdf(payload, totales){
+async function buildQuotePdf(payload, totales){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   const pageW = 210, margin = 14;
@@ -899,10 +852,19 @@ function buildQuotePdf(payload, totales){
 
   // Header
   let y = 20;
-  doc.setTextColor(...PDF_NAVY); doc.setFont('helvetica','bold'); doc.setFontSize(20);
-  doc.text('HEMA', margin, y);
-  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(...PDF_BLUE);
-  doc.text('INDUMENTARIA', margin, y+5);
+  let logoOk = false;
+  try{
+    const logo = await loadImageAsDataUrl('images/logo_hema.jpg');
+    const logoW = 20, logoH = logoW * (logo.h/logo.w);
+    doc.addImage(logo.dataUrl, 'JPEG', margin, 9, logoW, logoH);
+    logoOk = true;
+  }catch(e){ /* si el logo no carga, usamos el wordmark de texto como respaldo */ }
+  if(!logoOk){
+    doc.setTextColor(...PDF_NAVY); doc.setFont('helvetica','bold'); doc.setFontSize(20);
+    doc.text('HEMA', margin, y);
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(...PDF_BLUE);
+    doc.text('INDUMENTARIA', margin, y+5);
+  }
 
   doc.setFont('helvetica','italic'); doc.setFontSize(10.5); doc.setTextColor(...PDF_BLUE);
   doc.text('Vestimos el trabajo. Protegemos a quienes lo hacen.', pageW/2, y-4, {align:'center'});
@@ -914,7 +876,7 @@ function buildQuotePdf(payload, totales){
   doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(120);
   doc.text('Calzado | Guantes | Protección visual | Chalecos', pageW-margin, y+2, {align:'right'});
 
-  y += 14;
+  y += 16;
   doc.setDrawColor(220); doc.line(margin, y, pageW-margin, y);
   y += 8;
 
