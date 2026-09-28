@@ -532,7 +532,12 @@ document.getElementById('q-cliente').addEventListener('change', (e)=>{
 function populateItemForm(){
   const lista = document.getElementById('q-lista').value || 'SanJuan';
   const sel = document.getElementById('i-producto');
-  sel.innerHTML = DATA.productos.map(p=>`<option value="${p.ID}">${p.Producto} — ${money(getPrecioLista(p.ID, lista))}</option>`).join('');
+  
+  // Usar p.ID en el value:
+  sel.innerHTML = DATA.productos.map(p => 
+    `<option value="${p.ID}">${p.Producto} — ${money(getPrecioLista(p.ID, lista))}</option>`
+  ).join('');
+  
   renderLogosDetalle();
 }
 document.getElementById('q-lista').addEventListener('change', ()=>{ populateItemForm(); previewItemTotal(); renderCatalogoIfNeeded(); });
@@ -580,20 +585,62 @@ function readLogos(){
 function readItemForm(){
   const lista = document.getElementById('q-lista').value || 'SanJuan';
   const prodId = document.getElementById('i-producto').value;
-  const prod = DATA.productos.find(p=>p.ID===prodId);
-  const cant = Number(document.getElementById('i-cantidad').value)||0;
-  const unitNeto = getPrecioLista(prodId, lista);
+  
+  // Buscar por ID o por nombre como fallback
+  const prod = DATA.productos.find(p => p.ID === prodId || p.Producto === prodId);
+  
+  // Retorno defensivo si aún no cargaron los productos
+  if (!prod) {
+    return {
+      productId: '',
+      productName: '',
+      unit: 0,
+      cantidad: 0,
+      talles: '',
+      color: '',
+      modelo: '',
+      personalizacion: { llevaLogo: false, logos: [] },
+      detalles: '',
+      subtotal: 0,
+      logoFile: null
+    };
+  }
+
+  const cant = Number(document.getElementById('i-cantidad').value) || 0;
+  const unitNeto = getPrecioLista(prod.ID, lista);
   let subtotal = unitNeto * cant;
 
   const llevaLogo = document.getElementById('i-lleva-logo').checked;
   const logos = llevaLogo ? readLogos() : [];
   let personalizacionMonto = 0, personalizacionPct = 0;
-  logos.forEach(l=>{
-    const ad = DATA.adicionales.find(a=>a.ID===l.tecnicaId);
-    if(!ad) return;
-    if(ad.Tipo === 'Porcentaje'){ personalizacionPct += Number(ad.Valor); }
-    else { personalizacionMonto += Number(ad.Valor) * cant; }
+  
+  logos.forEach(l => {
+    const ad = DATA.adicionales.find(a => a.ID === l.tecnicaId);
+    if (!ad) return;
+    if (ad.Tipo === 'Porcentaje') { 
+      personalizacionPct += Number(ad.Valor); 
+    } else { 
+      personalizacionMonto += Number(ad.Valor) * cant; 
+    }
   });
+
+  subtotal += personalizacionMonto;
+  subtotal += subtotal * (personalizacionPct / 100);
+
+  return {
+    productId: prod.ID,
+    productName: prod.Producto,
+    unit: unitNeto,
+    cantidad: cant,
+    talles: document.getElementById('i-talles').value,
+    color: document.getElementById('i-color').value,
+    modelo: document.getElementById('i-modelo').value,
+    personalizacion: { llevaLogo, logos },
+    detalles: document.getElementById('i-detalles').value,
+    subtotal: subtotal,
+    logoFile: document.getElementById('i-logo-file').files[0] || null
+  };
+}
   subtotal += personalizacionMonto;
   subtotal += subtotal * (personalizacionPct/100);
 
